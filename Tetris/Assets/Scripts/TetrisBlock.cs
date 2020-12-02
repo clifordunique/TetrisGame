@@ -10,20 +10,14 @@ public class TetrisBlock : MonoBehaviour
     private float previousTime;
     public float fallTime = 0.5f;
 
-    [HideInInspector]
-    public bool isGameOver;
-
     public Vector3 rotationPoint;
 
-    private static Transform[,] grid = new Transform[width, height];
-
-    public void Start()
-    {
-        isGameOver = false;
-    }
+    public static Transform[,] grid = new Transform[width, height];
 
     public void Update()
     {
+        // Movement 
+
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             transform.position += new Vector3(-1, 0, 0);
@@ -63,15 +57,41 @@ public class TetrisBlock : MonoBehaviour
                 transform.position -= new Vector3(0, -1, 0);
                 AddToGrid();
                 CheckForLines();
+
                 this.enabled = false;
 
-                EndGame();
+                if (AboveGrid())
+                {
+                    FindObjectOfType<GameStateManager>().GameOver();
+                    return;
+                }
 
-                FindObjectOfType<SpawnBlock>().NewBlock();
+                else
+                {
+                    FindObjectOfType<SpawnBlock>().NewBlock();
+                }
             }
 
             previousTime = Time.time;
         }
+    }
+
+    public bool AboveGrid()
+    {
+        for (int x = 0; x < width; x++)
+        {
+            foreach (Transform children in transform)
+            {
+                int roundedY = Mathf.RoundToInt(children.transform.position.y);
+
+                if (roundedY > height - 1)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void CheckForLines()
@@ -82,19 +102,6 @@ public class TetrisBlock : MonoBehaviour
             {
                 DeleteLine(i);
                 RowDown(i);
-            }
-        }
-    }
-
-    private void EndGame()
-    {
-        for (int x = 0; x < width; x++)
-        {
-            if (grid[height, x] != null)
-            {
-                isGameOver = true;
-
-                // ADD GAME OVER UI HERE
             }
         }
     }
@@ -146,7 +153,10 @@ public class TetrisBlock : MonoBehaviour
             int roundedX = Mathf.RoundToInt(children.transform.position.x);
             int roundedY = Mathf.RoundToInt(children.transform.position.y);
 
-            grid[roundedX, roundedY] = children;
+            if (!AboveGrid())
+            {
+                grid[roundedX, roundedY] = children;
+            }
         }
     }
 
@@ -173,6 +183,6 @@ public class TetrisBlock : MonoBehaviour
 
     IEnumerator WaitTime()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.4f);
     }
 }
