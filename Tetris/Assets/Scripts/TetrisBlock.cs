@@ -48,7 +48,7 @@ public class TetrisBlock : MonoBehaviour
             }
         }
 
-        if (Time.time - previousTime > (Input.GetKey(KeyCode.DownArrow) ? fallTime / 10 : fallTime))
+        if (Time.time - previousTime > (Input.GetKey(KeyCode.DownArrow) ? fallTime / 14 : fallTime))
         {
             transform.position += new Vector3(0, -1, 0);
 
@@ -73,6 +73,20 @@ public class TetrisBlock : MonoBehaviour
             }
 
             previousTime = Time.time;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            while (ValidMove())
+            {
+                transform.position += new Vector3(0, -1, 0);
+
+                if (!ValidMove())
+                {
+                    transform.position -= new Vector3(0, -1, 0);
+                    break;
+                }
+            }
         }
     }
 
