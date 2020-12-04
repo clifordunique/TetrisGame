@@ -14,6 +14,14 @@ public class TetrisBlock : MonoBehaviour
 
     public static Transform[,] grid = new Transform[width, height];
 
+    private GameObject ghostPiece;
+
+    private void Start()
+    {
+        ghostPiece = transform.GetChild(0).gameObject;
+        Instantiate(ghostPiece);
+    }
+
     public void Update()
     {
         // Movement 
@@ -58,8 +66,6 @@ public class TetrisBlock : MonoBehaviour
                 AddToGrid();
                 CheckForLines();
 
-                this.enabled = false;
-
                 if (AboveGrid())
                 {
                     FindObjectOfType<GameStateManager>().GameOver();
@@ -70,6 +76,8 @@ public class TetrisBlock : MonoBehaviour
                 {
                     FindObjectOfType<SpawnBlock>().NewBlock();
                 }
+
+                this.enabled = false;
             }
 
             previousTime = Time.time;
@@ -86,6 +94,20 @@ public class TetrisBlock : MonoBehaviour
                     transform.position -= new Vector3(0, -1, 0);
                     break;
                 }
+            }
+        }
+    }
+
+    public void GhostBlock()
+    {
+        while (ValidMove())
+        {
+            ghostPiece.transform.position += new Vector3(0, -1, 0);
+
+            if (!ValidMove())
+            {
+                ghostPiece.transform.position -= new Vector3(0, -1, 0);
+                break;
             }
         }
     }

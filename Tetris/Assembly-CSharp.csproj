@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\GameOver.cs" />
     <Compile Include="Assets\Scripts\GameStateManager.cs" />
+    <Compile Include="Assets\Scripts\GhostBlock.cs" />
     <Compile Include="Assets\Scripts\SpawnBlock.cs" />
     <Compile Include="Assets\Scripts\TetrisBlock.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
